@@ -199,7 +199,8 @@ clojure -M:cljs compile browser-test  # for a browser, from target/browser-test
 ```
 
 On the JVM, a test also runs the client against the endpoint over HTTP on
-localhost.
+localhost. [doc/micropub-rocks.md](doc/micropub-rocks.md) says which tests
+of micropub.rocks the tests cover.
 
 License
 -------
