@@ -6,7 +6,7 @@
  ;; URLs, whatwg-mime reads media types, and indieauth-clj checks access
  ;; tokens.
  :deps  {org.clojure/clojure        {:mvn/version "1.11.4"}
-         dk.simongray/wary-fetch    {:mvn/version "0.8.1"}
+         dk.simongray/wary-fetch    {:mvn/version "0.10.0"}
          dk.simongray/html-pieces   {:mvn/version "0.6.0"}
          dk.simongray/whatwg-url    {:mvn/version "0.1.0"}
          dk.simongray/whatwg-mime   {:mvn/version "0.2.1"}
@@ -15,8 +15,10 @@
  :aliases
  {;; clojure -X:test
   :test  {:extra-paths ["test"]
+          ;; Ring reads the multipart bodies of the end-to-end test.
           :extra-deps  {io.github.cognitect-labs/test-runner
-                        {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+                        {:git/tag "v0.5.1" :git/sha "dfb30dd"}
+                        ring/ring-core {:mvn/version "1.15.5"}}
           :main-opts   ["-m" "cognitect.test-runner"]
           :exec-fn     cognitect.test-runner.api/test}
 

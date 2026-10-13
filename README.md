@@ -37,7 +37,7 @@ from [Clojars](https://clojars.org/dk.simongray/micropub-clj) to the
 `:deps` in your `deps.edn`:
 
 ```clojure
-dk.simongray/micropub-clj {:mvn/version "0.1.0"}
+dk.simongray/micropub-clj {:mvn/version "0.2.0"}
 ```
 
 For changes that aren't released yet, use the SHA of the latest commit on
@@ -180,8 +180,22 @@ from IndieAuth:
 The client sends a create form-encoded when it can, since every server
 accepts that, and as JSON otherwise. For a query, e.g. q=config to find
 the media endpoint, use `micropub/query-request`. A server's error comes
-back under `:error`, with Micropub's `:code` and `:reason`. The client
-doesn't upload files yet.
+back under `:error`, with Micropub's `:code` and `:reason`.
+
+To post a photo, upload it to the media endpoint and put its URL in the
+post:
+
+```clojure
+(micropub/call! (micropub/upload-request "https://simon.grays.blog/media" token
+                                         {:content      jpeg-bytes
+                                          :filename     "sunset.jpg"
+                                          :content-type "image/jpeg"}))
+;; => {:status 201 :url "https://simon.grays.blog/assets/2026-10-13-sunset.jpg"}
+```
+
+A server without a media endpoint takes the files with the create
+instead. Give the create its `:files`, e.g. `{:photo [file]}`, and the
+client sends it as multipart.
 
 Principles
 ----------

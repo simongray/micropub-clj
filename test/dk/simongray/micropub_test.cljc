@@ -1,11 +1,13 @@
 (ns dk.simongray.micropub-test
   "Updating entries, and the client: discovery, requests and the server's
   answers."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.string :as str]
+            [clojure.test :refer [deftest is testing]]
             [dk.simongray.micropub :as micropub]
             [dk.simongray.micropub.server :as server]
             [dk.simongray.micropub.test-support :as t :refer [run]]
             [dk.simongray.wary-fetch.async :as async]
+            [dk.simongray.wary-fetch.bytes :as bytes]
             [dk.simongray.wary-fetch.secret :as secret]))
 
 (def entry
@@ -114,6 +116,27 @@
                  (micropub/request endpoint "t" {:action :delete})))
     (is (thrown? #?(:clj Exception :cljs :default)
                  (micropub/request endpoint "t" {:action :publish :url "https://simon.example/p"}))))
+  (testing "a create with files is multipart (3.3.1), and so is an upload (3.6.2)"
+    (let [photo {:content (bytes/encode "a jpeg") :filename "cat.jpg" :content-type "image/jpeg"}
+          body  #(bytes/decode (secret/reveal (:body %)))
+          r     (micropub/request endpoint "t" {:type       ["h-entry"]
+                                                :properties {:content ["A cat"]}
+                                                :files      {:photo [photo]}})]
+      (is (str/starts-with? (get-in r [:headers "Content-Type"]) "multipart/form-data; boundary="))
+      (is (str/includes? (body r) "name=\"h\"\r\n\r\nentry"))
+      (is (str/includes? (body r) "name=\"photo\"; filename=\"cat.jpg\"\r\nContent-Type: image/jpeg\r\n\r\na jpeg"))
+      (is (str/includes? (body (micropub/upload-request "https://simon.example/media" "t" photo))
+                         "name=\"file\"; filename=\"cat.jpg\""))
+      (is (thrown? #?(:clj Exception :cljs :default)
+                   (micropub/request endpoint "t" {:type       ["h-entry"]
+                                                   :properties {:content [{:html "<b>A cat</b>"}]}
+                                                   :files      {:photo [photo]}}))
+          "a create that can't be a form")
+      (is (thrown? #?(:clj Exception :cljs :default)
+                   (micropub/request endpoint "t" {:action :update
+                                                   :url    "https://simon.example/p"
+                                                   :files  {:photo [photo]}}))
+          "an update")))
   (testing "a query's parameters go after the endpoint's own (3.7)"
     (is (= (str "https://simon.example/micropub?site=1&q=source&url=https%3A%2F%2Fsimon.example%2Fp"
                 "&properties%5B%5D=content&properties%5B%5D=category")

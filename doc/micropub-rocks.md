@@ -41,7 +41,5 @@ Not covered
 - **Your files.** Tests 700 to 702 fetch the URL that the media endpoint
   returns, and check that the file comes back with its content type.
 - **The client tests.** The client's own tests check its requests, read
-  them back with `server/action` and post to the endpoint over HTTP, but
-  they don't follow the client tests of micropub.rocks. The client
-  doesn't upload files yet, so it can't pass client tests 300, 301 and
-  700.
+  them back with `server/action` and post to both endpoints over HTTP,
+  but they don't follow the client tests of micropub.rocks.

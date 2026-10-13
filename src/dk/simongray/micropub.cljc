@@ -186,8 +186,14 @@
   - form-encoded for a create with one type and only strings as values,
     since every server accepts that (2.1.3), unless :json? is true in
     `opts`
+  - multipart for such a create with :files (3.3.1)
   - JSON for any other create and for an update (3.3.2, 3.4)
   - form-encoded for a delete or an undelete (3.5)
+
+  The :files map properties to files, e.g. {:photo [file]}, and a file is
+  a map of its :content as bytes, its :filename and its :content-type, as
+  wary-fetch's multipart-request takes it. For any other action, upload
+  the files with upload-request and put their URLs in the action instead.
 
   You can hide the token with wary-fetch's secret/hide. The Authorization
   header is hidden either way."
@@ -197,8 +203,14 @@
     {:keys [json?] :as opts}]
    (let [options (request-options token)]
      (cond
+       (and (seq files) (not (and (= :create kind) (form? action))))
+       (throw (ex-info (str "Only a create with one type and only strings as values "
+                            "can send files; upload them with upload-request instead")
+                       {:action action}))
+
        (seq files)
-       (throw (ex-info "The client doesn't send files yet" {:action action}))
+       (http/multipart-request endpoint (concat (create-fields action) (fields-of files))
+                               options)
 
        (and (= :create kind) (form? action) (not json?))
        (http/form-request endpoint (create-fields action) options)
@@ -238,6 +250,15 @@
       :url     (url/with-query endpoint (cons ["q" (name q)] fields))
       :headers {"Authorization" (http/authorization {:token token})
                 "Accept"        "application/json"}})))
+
+;; Micropub 3.6.2: the file goes in a part named file
+(defn upload-request
+  "The request map that uploads the `file` to the media `endpoint` with the
+  access `token`. The `file` is a map of its :content as bytes, its
+  :filename and its :content-type, and call! returns the :url of the file
+  that the server stored."
+  [endpoint token file]
+  (http/multipart-request endpoint [["file" file]] (request-options token)))
 
 ;;; Answers
 
