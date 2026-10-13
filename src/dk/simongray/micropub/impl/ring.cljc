@@ -6,7 +6,8 @@
             [dk.simongray.wary-fetch.bytes :as bytes]
             [dk.simongray.wary-fetch.headers :as headers]
             [dk.simongray.wary-fetch.json :as json]
-            [dk.simongray.wary-fetch.url :as url])
+            [dk.simongray.wary-fetch.url :as url]
+            [dk.simongray.whatwg-mime :as mime])
   #?(:clj (:import [java.io InputStream])))
 
 (defn header
@@ -16,9 +17,9 @@
 
 (defn media-type
   "The media type of the body of the Ring `request`, in lower case and
-  without its parameters, or nil."
+  without its parameters, or nil when it has none that parses."
   [request]
-  (headers/media-type (header request "content-type")))
+  (mime/essence (mime/extract (get (:headers request) "content-type"))))
 
 (defn body-bytes
   "The bytes of a Ring request's `body` (a string, bytes, a stream or nil),

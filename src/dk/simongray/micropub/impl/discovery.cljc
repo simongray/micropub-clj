@@ -8,6 +8,7 @@
   (:require [clojure.string :as str]
             [dk.simongray.html-pieces :as html]
             [dk.simongray.wary-fetch.headers :as headers]
+            [dk.simongray.whatwg-mime :as mime]
             [dk.simongray.whatwg-url :as url]))
 
 ;; RFC 8288, section 3.3: link types separated by whitespace, in any case
@@ -33,7 +34,7 @@
   [{:keys [headers body] :as response}]
   (and (string? body)
        (contains? #{nil "text/html" "application/xhtml+xml"}
-                  (headers/media-type (headers/header headers "content-type")))))
+                  (mime/essence (mime/extract (get headers "content-type"))))))
 
 (defn page-urls
   "The URLs of the link elements with the link type `rel` in the head of

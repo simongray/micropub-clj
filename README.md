@@ -184,8 +184,9 @@ Principles
 - **One codebase.** The library is written in `.cljc` and depends on
   [wary-fetch](https://github.com/simongray/wary-fetch) for requests and
   JSON, [html-pieces](https://github.com/simongray/html-pieces) for pages,
-  [whatwg-url](https://github.com/simongray/whatwg-url) for URLs and
-  indieauth-clj for tokens.
+  [whatwg-url](https://github.com/simongray/whatwg-url) for URLs,
+  [whatwg-mime](https://github.com/simongray/whatwg-mime) for media types
+  and indieauth-clj for tokens.
 
 Development
 -----------
