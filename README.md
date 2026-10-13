@@ -37,7 +37,7 @@ from [Clojars](https://clojars.org/dk.simongray/micropub-clj) to the
 `:deps` in your `deps.edn`:
 
 ```clojure
-dk.simongray/micropub-clj {:mvn/version "0.2.0"}
+dk.simongray/micropub-clj {:mvn/version "0.3.0"}
 ```
 
 For changes that aren't released yet, use the SHA of the latest commit on
@@ -207,7 +207,8 @@ Principles
   sends through any `:send` you give it.
 - **One codebase.** The library is written in `.cljc` and depends on
   [wary-fetch](https://github.com/simongray/wary-fetch) for requests and
-  JSON, [html-pieces](https://github.com/simongray/html-pieces) for pages,
+  JSON, [webcrypto-clj](https://github.com/simongray/webcrypto-clj) for
+  bytes, [html-pieces](https://github.com/simongray/html-pieces) for pages,
   [whatwg-url](https://github.com/simongray/whatwg-url) for URLs,
   [whatwg-mime](https://github.com/simongray/whatwg-mime) for media types
   and indieauth-clj for tokens.

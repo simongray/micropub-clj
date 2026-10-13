@@ -3,10 +3,10 @@
   (:require [clojure.string :as str]
             [clojure.walk :as walk]
             #?(:clj [dk.simongray.wary-fetch.async :as async])
-            [dk.simongray.wary-fetch.bytes :as bytes]
             [dk.simongray.wary-fetch.headers :as headers]
             [dk.simongray.wary-fetch.json :as json]
             [dk.simongray.wary-fetch.url :as url]
+            [dk.simongray.webcrypto.bytes :as bytes]
             [dk.simongray.whatwg-mime :as mime])
   #?(:clj (:import [java.io InputStream])))
 

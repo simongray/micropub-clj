@@ -7,7 +7,7 @@
             [dk.simongray.micropub.server :as server]
             [dk.simongray.micropub.test-support :as t]
             [dk.simongray.wary-fetch :as http]
-            [dk.simongray.wary-fetch.bytes :as bytes]
+            [dk.simongray.webcrypto.bytes :as bytes]
             [ring.middleware.multipart-params :refer [wrap-multipart-params]]))
 
 (def anywhere
